@@ -105,6 +105,22 @@ class Trainer:
         print(f"Клієнти тренера {self.name}: {', '.join(self.clients)}")
 
 
+class Goal:
+    def __init__(self, athlete, target_weight):
+        self.athlete = athlete
+        self.target_weight = target_weight
+
+    def check(self, current_weight):
+        difference = self.target_weight - current_weight
+
+        if difference > 0:
+            print(f"{self.athlete}: до цілі залишилось набрати {difference:.1f} кг")
+        elif difference < 0:
+            print(f"{self.athlete}: потрібно скинути {abs(difference):.1f} кг")
+        else:
+            print(f"{self.athlete}: ціль досягнута!")
+
+
 
 exercises = {
     "Жим лежачи": [(60, 8), (60, 7), (55, 10)],
@@ -125,6 +141,11 @@ athlete.status()
 athlete.lose(0.5)
 athlete.status()
 athlete.gain(1.5)
+
+
+print()
+goal = Goal(athlete.name, 80)
+goal.check(athlete.weight)
 
 
 print()
