@@ -33,12 +33,6 @@ class Athlete:
         self.weight = weight
         self.height = height
 
-    def info(self, name, weight, height):
-        self.name = name
-        self.weight = weight
-        self.height = height
-        print (f"\n\nІм'я: {self.name},\nВага: {self.weight} кг,\nЗріст: {self.height} см\n\n\n")
-
     def bmi(self):
         return self.weight / (self.height / 100) ** 2
 
@@ -58,11 +52,8 @@ class Athlete:
         self.weight += kilograms
         print(f"Нова вага: {self.weight:.1f} кг")
 
-    def lose(self, kilograms):
-        self.weight -= kilograms
-        print(f"Нова вага: {self.weight:.1f} кг")
 
-class Abonement:
+class Subscription:
     def __init__(self, owner, days, price):
         self.owner = owner
         self.days = days
@@ -70,13 +61,13 @@ class Abonement:
         self.visits = 0
 
     def visit(self):
-            if self.days == 0:
-                print("Абонемент закінчився")
-                return
-    
-            self.days -= 1
-            self.visits += 1
-            print(f"Візит №{self.visits}, залишилось днів: {self.days}")
+        if self.days == 0:
+            print("Абонемент закінчився")
+            return
+
+        self.days -= 1
+        self.visits += 1
+        print(f"Візит №{self.visits}, залишилось днів: {self.days}")
 
     def price_per_visit(self):
         if self.visits == 0:
@@ -84,6 +75,32 @@ class Abonement:
             return
 
         print(f"Ціна одного візиту: {self.price / self.visits:.0f} грн")
+
+
+class Equipment:
+    def __init__(self, title, max_weight):
+        self.title = title
+        self.max_weight = max_weight
+        self.busy = False
+
+    def take(self, athlete):
+        if self.busy:
+            print(f"{self.title} вже зайнятий")
+            return
+
+        self.busy = True
+        print(f"{athlete} займає тренажер: {self.title}")
+
+    def release(self):
+        self.busy = False
+        print(f"{self.title} вільний")
+
+    def check_weight(self, weight):
+        if weight > self.max_weight:
+            print(f"Забагато: максимум {self.max_weight} кг")
+        else:
+            print(f"Вага {weight} кг підходить")
+
 
 class Trainer:
     def __init__(self, name, specialty):
@@ -99,11 +116,10 @@ class Trainer:
         print(f"План від тренера {self.name} ({self.specialty}):")
 
         for exercise, sets in workout.exercises.items():
-            print(f"  {exercise} - {len(sets)} підходів")
+            print(f"  {exercise} — {len(sets)} підходів")
 
     def show_clients(self):
         print(f"Клієнти тренера {self.name}: {', '.join(self.clients)}")
-
 
 
 exercises = {
@@ -112,31 +128,36 @@ exercises = {
     "Підйом гантелей": [(12, 12), (12, 10), (10, 12)]
 }
 
-workout = Workout("Гоша", exercises)
+name_of_sportsman = "Гоша"
+
+workout = Workout(name_of_sportsman, exercises)
 
 print(f"Тренування спортсмена: {workout.name}")
 workout.calculate()
 workout.strongest_exercise()
 
 print()
-athlete = Athlete("Гоша", 78.5, 182)
-athlete.info(athlete.name, athlete.weight, athlete.height)
-athlete.status()
-athlete.lose(0.5)
+athlete = Athlete(name_of_sportsman, 78.5, 182)
 athlete.status()
 athlete.gain(1.5)
 
-
 print()
-subscription = Abonement("Гоша", 30, 1200)
+subscription = Subscription(name_of_sportsman, 30, 1200)
 subscription.visit()
 subscription.visit()
 subscription.price_per_visit()
 
+print()
+bench = Equipment("Лава для жиму", 120)
+bench.take(athlete.name)
+bench.check_weight(60)
+bench.check_weight(150)
+bench.release()
 
 print()
-trainer = Trainer("Григорій", "силові тренування")
+trainer = Trainer("Олег", "силові тренування")
 trainer.add_client(athlete.name)
-trainer.add_client("Гоша")
+trainer.add_client("Марія")
 trainer.plan(workout)
 trainer.show_clients()
+
