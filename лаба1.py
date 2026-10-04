@@ -27,9 +27,21 @@ class Workout:
         print(f"Об'єм: {volumes[strongest]:.0f} кг")
 
 
-class Athlete:
-    def __init__(self, name, weight, height):
-        self.name = name
+#базовий клас: тут є всі три рівні доступу
+class Person:
+    def __init__(self, name, age, passport):
+        self.name = name              #public  - доступний усюди
+        self._age = age               #protected - для класу і нащадків
+        self.__passport = passport    #private - тільки всередині Person
+
+    def get_passport(self):
+        return self.__passport
+
+
+#athlete наслідує Person
+class Athlete(Person):
+    def __init__(self, name, age, passport, weight, height):
+        super().__init__(name, age, passport)
         self.weight = weight
         self.height = height
 
@@ -52,12 +64,21 @@ class Athlete:
         self.weight += kilograms
         print(f"Нова вага: {self.weight:.1f} кг")
 
+    def show_access(self):
+        print(f"public: {self.name}")
+        print(f"protected: {self._age}")      #у нащадку працює
+        try:
+            print(self.__passport)            #private - не працює
+        except AttributeError:
+            print("private: немає доступу до __passport")
+        print(f"private через метод: {self.get_passport()}")
+
 
 class Subscription:
     def __init__(self, owner, days, price):
         self.owner = owner
         self.days = days
-        self.price = price
+        self._price = price           #protected
         self.visits = 0
 
     def visit(self):
@@ -74,7 +95,22 @@ class Subscription:
             print("Візитів ще не було")
             return
 
-        print(f"Ціна одного візиту: {self.price / self.visits:.0f} грн")
+        print(f"Ціна одного візиту: {self._price / self.visits:.0f} грн")
+
+
+#premiumsubscription наслідує subscription
+class PremiumSubscription(Subscription):
+    def __init__(self, owner, days, price, discount):
+        super().__init__(owner, days, price)
+        self.discount = discount
+
+    def price_per_visit(self):
+        if self.visits == 0:
+            print("Візитів ще не було")
+            return
+
+        price = self._price * (1 - self.discount / 100)   # protected у нащадку
+        print(f"Ціна одного візиту зі знижкою: {price / self.visits:.0f} грн")
 
 
 class Equipment:
@@ -102,9 +138,10 @@ class Equipment:
             print(f"Вага {weight} кг підходить")
 
 
-class Trainer:
-    def __init__(self, name, specialty):
-        self.name = name
+#trainer теж наслідує person
+class Trainer(Person):
+    def __init__(self, name, age, passport, specialty):
+        super().__init__(name, age, passport)
         self.specialty = specialty
         self.clients = []
 
@@ -122,14 +159,44 @@ class Trainer:
         print(f"Клієнти тренера {self.name}: {', '.join(self.clients)}")
 
 
-exercises = {
-    "Жим лежачи": [(60, 8), (60, 7), (55, 10)],
-    "Тяга верхнього блока": [(60, 10), (60, 10), (65, 8)],
-    "Підйом гантелей": [(12, 12), (12, 10), (10, 12)]
-}
+name_of_sportsman = input("Ім'я спортсмена: ")
+age = int(input("Вік: "))
+passport = input("Номер паспорта: ")
+weight = float(input("Вага (кг): "))
+height = float(input("Зріст (см): "))
 
-name_of_sportsman = "Гоша"
+exercises = {}
+count = int(input("Скільки вправ: "))
+for i in range(count):
+    title = input(f"Назва вправи {i + 1}: ")
+    sets = []
+    sets_count = int(input("Кількість підходів: "))
+    for j in range(sets_count):
+        w = float(input(f"  Підхід {j + 1}, вага: "))
+        r = int(input(f"  Підхід {j + 1}, повторення: "))
+        sets.append((w, r))
+    exercises[title] = sets
 
+days = int(input("Днів в абонементі: "))
+price = float(input("Ціна абонемента (грн): "))
+discount = float(input("Знижка преміум-абонемента (%): "))
+visits = int(input("Скільки візитів зробити: "))
+
+equipment_title = input("Назва тренажера: ")
+max_weight = float(input("Максимальна вага тренажера (кг): "))
+weight_1 = float(input("Перша вага для перевірки: "))
+weight_2 = float(input("Друга вага для перевірки: "))
+
+trainer_name = input("Ім'я тренера: ")
+trainer_age = int(input("Вік тренера: "))
+trainer_passport = input("Паспорт тренера: ")
+specialty = input("Спеціалізація тренера: ")
+second_client = input("Ім'я ще одного клієнта: ")
+gain_kg = float(input("На скільки кг змінилась вага: "))
+
+# ---------- Робота програми ----------
+
+print()
 workout = Workout(name_of_sportsman, exercises)
 
 print(f"Тренування спортсмена: {workout.name}")
@@ -137,27 +204,29 @@ workout.calculate()
 workout.strongest_exercise()
 
 print()
-athlete = Athlete(name_of_sportsman, 78.5, 182)
+athlete = Athlete(name_of_sportsman, age, passport, weight, height)
 athlete.status()
-athlete.gain(1.5)
+athlete.gain(gain_kg)
 
 print()
-subscription = Subscription(name_of_sportsman, 30, 1200)
-subscription.visit()
-subscription.visit()
+subscription = PremiumSubscription(name_of_sportsman, days, price, discount)
+for _ in range(visits):
+    subscription.visit()
 subscription.price_per_visit()
 
 print()
-bench = Equipment("Лава для жиму", 120)
+bench = Equipment(equipment_title, max_weight)
 bench.take(athlete.name)
-bench.check_weight(60)
-bench.check_weight(150)
+bench.check_weight(weight_1)
+bench.check_weight(weight_2)
 bench.release()
 
 print()
-trainer = Trainer("Олег", "силові тренування")
+trainer = Trainer(trainer_name, trainer_age, trainer_passport, specialty)
 trainer.add_client(athlete.name)
-trainer.add_client("Марія")
+trainer.add_client(second_client)
 trainer.plan(workout)
 trainer.show_clients()
 
+print()
+athlete.show_access()
