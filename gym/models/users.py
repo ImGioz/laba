@@ -5,7 +5,9 @@ from models.exceptions import ValidationError
 
 class Athlete(Person):
 
-    def __init__(self, name: str, age: int, passport: str, weight: float, height: float):
+    def __init__(
+        self, name: str, age: int, passport: str, weight: float, height: float
+    ):
         super().__init__(name, age, passport)
         if weight <= 0 or height <= 0:
             raise ValidationError("Зріст та вага повинні бути більше 0!")
@@ -40,10 +42,32 @@ class Athlete(Person):
 
 class Trainer(Person):
 
-    def __init__(self, name: str, age: int, passport: str, specialty: str):
+    def __init__(
+        self,
+        name: str,
+        age: int,
+        passport: str,
+        specialty: str,
+        salary: float = 1000.0,
+    ):
         super().__init__(name, age, passport)
         self.specialty = specialty
         self.clients = []
+        if salary < 0:
+            raise ValidationError("Зарплата не може бути від'ємною!")
+        self.__salary = salary
+
+    @property
+    def salary(self) -> float:
+        return self.__salary
+
+    def raise_salary(self, amount: float) -> None:
+        if amount <= 0:
+            raise ValidationError("Надбавка має бути більше 0!")
+        self.__salary += amount
+        logging.info(
+            f"Тренеру {self.name} підвищено зарплату на {amount} грн. Нова зарплата: {self.__salary} грн"
+        )
 
     def info(self) -> None:
         logging.info(
