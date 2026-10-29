@@ -1,6 +1,7 @@
 import logging
 from models.exceptions import ValidationError
 
+
 class Subscription:
 
     def __init__(self, owner: str, days: int, price: float):
@@ -59,11 +60,12 @@ class Workout:
 
     def calculate(self) -> float:
         self.total_volume = 0.0
+        logging.info(f"Розрахунок тренування для: {self.name}")
         for exercise, sets in self.exercises.items():
             vol = self.volume(sets)
             self.total_volume += vol
-            logging.info(f"Вправа {exercise}: {vol:.0f} кг")
-        logging.info(f"Загальний об'єм тренування: {self.total_volume:.0f} кг")
+            logging.info(f"  • {exercise}: {vol:.0f} кг")
+        logging.info(f"Загальний об'єм: {self.total_volume:.0f} кг")
         return self.total_volume
 
 
@@ -76,22 +78,22 @@ class Equipment:
 
     def take(self, athlete_name: str) -> None:
         if self.busy:
-            logging.warning(f"Тренажер {self.title} вже зайнятий!")
+            logging.warning(f"Тренажер '{self.title}' вже зайнятий!")
             return
         self.busy = True
         logging.info(f"{athlete_name} займає тренажер: {self.title}")
 
     def release(self) -> None:
         self.busy = False
-        logging.info(f"Тренажер {self.title} вільний")
+        logging.info(f"Тренажер '{self.title}' вільний")
 
     def check_weight(self, weight: float) -> bool:
         if weight > self.max_weight:
             logging.warning(
-                f"Забагато для {self.title}: максимум {self.max_weight} кг"
+                f"Забагато для '{self.title}': максимум {self.max_weight:.0f} кг"
             )
             return False
         logging.info(
-            f"Вага {weight} кг підходить для тренажера {self.title}"
+            f"Вага {weight:.0f} кг підходить для тренажера '{self.title}'"
         )
         return True
