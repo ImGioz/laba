@@ -66,7 +66,7 @@ class Trainer(Person):
             raise ValidationError("Надбавка має бути більше 0!")
         self.__salary += amount
         logging.info(
-            f"Тренеру {self.name} підвищено зарплату на {amount} грн. Нова зарплата: {self.__salary} грн"
+            f"Тренеру {self.name} підвищено зарплату на {amount:.0f} грн. Нова зарплата: {self.__salary:.0f} грн"
         )
 
     def info(self) -> None:
@@ -81,7 +81,7 @@ class Trainer(Person):
 
     def plan(self, workout) -> None:
         logging.info(
-            f"План від тренера {self.name} (Спеціалізація: {self.specialty}):"
+            f"План від тренера {self.name} ({self.specialty}):"
         )
         for exercise, sets in workout.exercises.items():
-            logging.info(f"   {exercise} — {len(sets)} підходів")
+            logging.info(f"  • {exercise} — {len(sets)} підходів")
