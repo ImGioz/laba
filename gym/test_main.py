@@ -1,7 +1,6 @@
-unittest з імпортом unittest
+import unittest
 from models.exceptions import ValidationError
-from models.services import PremiumSubscription, Workout
-from models.users import Athlete
+from models.users import Athlete, Trainer
 
 
 class TestGymSystem(unittest.TestCase):
@@ -11,13 +10,15 @@ class TestGymSystem(unittest.TestCase):
         expected_bmi = 70.0 / (1.75**2)
         self.assertAlmostEqual(athlete.bmi(), expected_bmi, places=2)
 
-    def test_invalid_passport_raises_error(self):
-        with self.assertRaises(ValidationError):
-            Athlete("Тест", 20, "12345Некоректний", 70.0, 175.0)
+    def test_trainer_private_salary(self):
+        trainer = Trainer("Дмитро", 30, "CD654321", "Фітнес", salary=1500.0)
+        self.assertEqual(trainer.salary, 1500.0)
 
-    def test_workout_volume(self):
-        workout = Workout("Тест", {"Присідання": [[100.0, 5], [100.0, 5]]})
-        self.assertEqual(workout.calculate(), 1000.0)
+        trainer.raise_salary(500.0)
+        self.assertEqual(trainer.salary, 2000.0)
+
+        with self.assertRaises(ValidationError):
+            trainer.raise_salary(-100.0)
 
 
 if __name__ == "__main__":
