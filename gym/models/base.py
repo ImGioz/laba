@@ -3,7 +3,6 @@ import logging
 import re
 from models.exceptions import ValidationError
 
-
 class IPerson(ABC):
 
     @abstractmethod
@@ -22,24 +21,24 @@ class Person(IPerson):
             raise ValidationError("Вік не може бути від'ємним!")
         self.name = name
         self._age = age
-        self.__passport = None
+        self._passport = None
         self.passport = passport
 
     @property
     def passport(self) -> str:
-        return self.__passport
+        return self._passport
 
     @passport.setter
     def passport(self, value: str):
         if not re.match(r"^[A-ZА-ЯІЇЄ]{2}\d{6}$", value, re.IGNORECASE):
-            logging.error(f"Спроба встановити некоректний паспорт: {value}")
+            logging.error(f"Некоректний паспорт: {value}")
             raise ValidationError(
                 f"Некоректний формат паспорта: '{value}'. Очікується 2 літери та 6 цифр."
             )
-        self.__passport = value.upper()
+        self._passport = value.upper()
 
     def get_passport(self) -> str:
-        return self.__passport
+        return self._passport
 
     def info(self) -> None:
         logging.info(f"Людина: {self.name}, вік: {self._age}")
