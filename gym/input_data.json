@@ -1,0 +1,36 @@
+{
+  "athlete": {
+    "name": "Гоша",
+    "age": 25,
+    "passport": "AB123456",
+    "weight": 78.5,
+    "height": 180.0,
+    "gain_kg": 2.5
+  },
+  "workout": {
+    "exercises": {
+      "Жим лежачи": [[80.0, 10], [85.0, 8], [90.0, 6]],
+      "Присідання": [[100.0, 10], [110.0, 8], [120.0, 6]]
+    }
+  },
+  "subscription": {
+    "days": 30,
+    "price": 1200.0,
+    "discount": 15.0,
+    "visits_to_make": 3
+  },
+  "equipment": {
+    "title": "Штанга",
+    "max_weight": 150.0,
+    "check_weight_1": 120.0,
+    "check_weight_2": 160.0
+  },
+  "trainer": {
+    "name": "Олег",
+    "age": 35,
+    "passport": "CD654321",
+    "specialty": "Пауерліфтинг",
+    "salary": 1500.0,
+    "second_client": "Марія"
+  }
+}
