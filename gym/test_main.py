@@ -5,6 +5,7 @@ from models.users import Athlete, Trainer
 
 class TestGymSystem(unittest.TestCase):
 
+
     def test_bmi_calculation(self):
         athlete = Athlete("Гоша", 20, "АБ123456", 70.0, 175.0)
         expected_bmi = 70.0 / (1.75**2)
@@ -19,6 +20,16 @@ class TestGymSystem(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             trainer.raise_salary(-100.0)
+
+    def test_bad_fail(self):
+
+        athlete = Athlete("Гоша", 20, "АБ123456", 70.0, 175.0)
+        self.assertEqual(athlete.bmi(), 30.0)
+
+    def test_bad_error(self):
+
+        athlete = Athlete("Гоша", -5, "АБ123456", 70.0, 175.0)
+        self.assertEqual(athlete.weight, 70.0)
 
 
 if __name__ == "__main__":
